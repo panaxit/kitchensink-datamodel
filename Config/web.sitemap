@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root xmlns="http://www.panaxit.com/sitemap">
+	
+	<menu title="Grid" description="">
+		<catalog title="CONTROLS_Basic[edit][N]" description="" catalogName="dbo.CONTROLS_Basic" mode="edit" controlType="gridView" />
+		<catalog title="CONTROLS_Basic[readonly][N]" description="" catalogName="dbo.CONTROLS_Basic" mode="readonly" controlType="gridView" filters="'IntegerReq>9'" pageSize="10" pageIndex="3" />
+		<catalog title="CONTROLS_Basic[browse][N]" description="" catalogName="dbo.CONTROLS_Basic" mode="browse" controlType="gridView" filters="'IntegerReq>40'" pageSize="10" />
+	</menu>
+	<menu title="Form" description="">
+		<catalog title="CONTROLS_Basic[edit][N]" description="" catalogName="dbo.CONTROLS_Basic" mode="edit" controlType="formView" filters="" />
+		<catalog title="CONTROLS_Advanced[edit][N]" description="" catalogName="dbo.CONTROLS_Advanced" mode="edit" controlType="formView" filters="" />
+		<catalog title="CONTROLS_Cascaded[edit][1]" description="" catalogName="dbo.CONTROLS_Cascaded" mode="edit" controlType="formView" id="1" />
+		<catalog title="CONTROLS_Basic[filters]" description="" catalogName="dbo.CONTROLS_Basic" mode="filters" controlType="formView" />
+	</menu>
+	<menu title="Cards" description="">
+		<catalog title="CentroDeCostos[readonly][N]" description="" catalogName="CentrosDeCostos.CentroDeCostos" mode="readonly" controlType="cardsView" filters="[EsActivo=1]" />
+		<catalog title="CentroDeCostos[edit][N]" description="" catalogName="CentrosDeCostos.CentroDeCostos" mode="edit" controlType="cardsView" filters="[EsActivo=1]" pageSize="4" pageIndex="3" />
+		<catalog title="CentroDeCostos[browse][N]" description="" catalogName="CentrosDeCostos.CentroDeCostos" mode="browse" controlType="cardsView" pageSize="8" />
+	</menu>
+	<menu title="Nested" description="">
+		<catalog title="CONTROLS_NestedForm[edit][1]" description="" catalogName="dbo.CONTROLS_NestedForm" mode="edit" controlType="formView" id="1" />
+		<catalog title="CONTROLS_NestedGrid[edit][1]" description="" catalogName="dbo.CONTROLS_NestedGrid" mode="edit" controlType="formView" identityKey="Id" id="1" />
+	</menu>
+	<menu title="MasterDetail" description="">
+		<catalog title="CONTROLS_Advanced[edit][N]" description="" catalogName="dbo.CONTROLS_Advanced" mode="edit" controlType="masterDetail" />
+	</menu>
+	<catalog title="Nested Grid + Checkboxes (N-M)" description="" catalogName="dbo.CONTROLS_JunctionTable" mode="edit" controlType="formView" id="1" />
+	<catalog title="Tags (N-M)" description="" catalogName="dbo.CONTROLS_Tags" mode="edit" controlType="formView" id="1" />
+	<catalog title="Multi-Selector (N-M)" description="" catalogName="dbo.CONTROLS_MultiSelector" mode="edit" controlType="formView" id="1" />
+	<catalog title="Autoreference Tree (1-1)" description="" catalogName="dbo.CONTROLS_Tree" mode="edit" controlType="formView" id="1" />
+	<catalog title="Autoreference Tree + Checkboxes (N-M)" description="" catalogName="dbo.CONTROLS_TreeSelector" mode="edit" controlType="formView" id="1" />
+	<catalog title="Schedule" description="" catalogName="dbo.CONTROLS_Schedule" mode="edit" controlType="formView" id="1" />
+	<catalog title="Print" description="" catalogName="dbo.CONTROLS_Print" mode="edit" controlType="formView" id="1" />
+
+	<menu title="❤ Favoritos" expanded="true" expandable="false" categoryType="bookmarks">
+		<catalog title="Editar CC Horizontes" description="" catalogName="CentrosDeCostos.CentroDeCostos" mode="edit" controlType="formView" id="3" />
+	</menu>
+
+</root>
