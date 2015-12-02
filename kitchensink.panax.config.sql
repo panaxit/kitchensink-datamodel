@@ -1,34 +1,26 @@
 -- /////////////////////////////////////////////////// --
---
+-- /////////////////////////////////////////////////// --
+-- 
 --					Kitchensink Demo
 --
 --				  Panax Configurations
 --
+-- /////////////////////////////////////////////////// --
 -- /////////////////////////////////////////////////// --
 
 -- INSTALLING
 
 -- #panax.install 'C:\Users\benoror\Dropbox\panax\clones\panaxdb\dist\Panax.xml'
 -- #panax.downgrade 'C:\Users\benoror\Dropbox\panax\clones\panaxdb\dist\Panax.xml'
-SELECT @@version as vendor_ver, #database.getConfig('px:version') AS panaxdb_ver
+
+SELECT @@version as vendor_ver, #database.getConfig('px:version') AS panaxdb_ver, #database.getProperty('px:App_Path') AS panaxdb_path
+
+-- SELECT #database.getProperty('px:App_Path')
+-- EXEC #database.setProperty 'px:App_Path', 'C:\Users\Administrador\Documents\panax-datamodel-kitchensink'
 
 -- CLEANING
 
-EXEC [$Ver:Beta_12].clearCache 'dbo.CONTROLS_Grid'
-EXEC [$Ver:Beta_12].clearCache 'dbo.CONTROLS_Basic'
-EXEC [$Ver:Beta_12].clearCache 'dbo.CONTROLS_Advanced'
-EXEC [$Ver:Beta_12].clearCache 'dbo.CONTROLS_NestedForm'
-EXEC [$Ver:Beta_12].clearCache 'dbo.CONTROLS_NestedGrid'
-EXEC [$Ver:Beta_12].clearCache 'dbo.CONTROLS_Cascaded'
-
-EXEC [$Ver:Beta_12].clearCache 'dbo.Empleado2'
-EXEC [$Ver:Beta_12].clearCache 'dbo.Empleado'
-EXEC [$Ver:Beta_12].clearCache 'dbo.Telefonos'
-EXEC [$Ver:Beta_12].clearCache 'dbo.Domicilio'
-EXEC [$Ver:Beta_12].clearCache 'CatalogosSistema.Pais'
-EXEC [$Ver:Beta_12].clearCache 'CatalogosSistema.Estado'
-EXEC [$Ver:Beta_12].clearCache 'CatalogosSistema.Municipio'
-EXEC [$Ver:Beta_12].clearCache 'CentrosDeCostos.CentroDeCostos'
+EXEC [$Ver:Beta_12].clearCache
 
 EXEC [$Metadata].rebuild
 
@@ -50,7 +42,29 @@ EXEC [$Security].Authenticate 'webmaster', 'tests'
 
 EXEC [$Security].UserSitemap @@userId=-1
 
--- dbo.CONTROLS_Basic
+-- CLI
+-- CONFIG LIST
+EXEC [$Table].exportConfig
+EXEC [$Table].config 
+EXEC [$Table].config 'dbo.Logs'
+EXEC [$Table].config 'dbo.Logs', 'Nombre'
+EXEC [$Table].clearConfig 'dbo.Logs', 'Nombre', '@whatever'
+EXEC [$Table].config 'dbo.Logs', 'Nombre', '@whatever', 'a'
+-- CONFIG REMOVE
+EXEC [$Table].clearConfig  
+EXEC [$Table].clearConfig 'dbo.Logs'
+EXEC [$Table].clearConfig 'dbo.Logs', 'Nombre', '@whatever'
+-- CACHE CLEAR
+EXEC [$Ver:Beta_12].clearCache
+EXEC [$Ver:Beta_12].clearCache 'dbo.Empleado2'
+-- METADATA
+EXEC [$Metadata].rebuild
+
+-- /////////////////////////////////////////////////// --
+--
+--				   dbo.CONTROLS_Basic
+--
+-- /////////////////////////////////////////////////// --
 
 --formView/insert
 EXEC [$Ver:Beta_12].getXmlData @@userId=-1, @tableName='dbo.CONTROLS_Basic', @output=json, @getData=1, @getStructure=1, @rebuild=DEFAULT, @controlType=formView, @mode='insert', @pageIndex=DEFAULT, @pageSize=DEFAULT, @maxRecords=DEFAULT, @parameters=DEFAULT, @filters=DEFAULT, @sorters=DEFAULT, @fullPath=DEFAULT, @columnList=DEFAULT, @lang=DEFAULT
@@ -90,15 +104,24 @@ EXEC [$Ver:Beta_12].clearCache 'dbo.CONTROLS_Basic'
 
 EXEC [$Metadata].rebuild
 
--- dbo.CONTROLS_Advanced
--- -- dbo.CONTROLS_ProfilesPivot
--- -- dbo.Profiles
+
+-- /////////////////////////////////////////////////// --
+--
+--				dbo.CONTROLS_Advanced
+--			  + dbo.CONTROLS_Profiles  - Junction Table
+--				  + dbo.Profiles       - Self-ref Table
+--
+-- /////////////////////////////////////////////////// --
+
 
 EXEC [$Ver:Beta_12].getXmlData @@UserId=-1, @TableName='dbo.CONTROLS_Advanced', @Mode=edit, @ControlType=formView, @PageIndex=DEFAULT, @PageSize=DEFAULT, @MaxRecords=DEFAULT, @Parameters=DEFAULT, @lang=DEFAULT, @output='json', @getStructure=1, @getData=1
 
 EXEC [$Table].config 'dbo.CONTROLS_Advanced', 'Color', '@moveBefore', 'FileUpload'
 
+--------------------------
 -- -- JUNCTION TABLE -- --
+--------------------------
+
 EXEC [$Table].config 'dbo.CONTROLS_Advanced', 'CONTROLS_Profiles', '@headerText', 'Profiles (Junction Table)'
 -- Scaffold junction table
 EXEC [$Table].config 'dbo.CONTROLS_Advanced', 'CONTROLS_Profiles', 'scaffold', 'true';
@@ -107,15 +130,47 @@ EXEC [$Table].config 'dbo.CONTROLS_Advanced', 'CONTROLS_Profiles', '//ForeignKey
 -- @minSelections & @maxSelections are ignored and set to '1' when unique key
 EXEC [$Table].config 'dbo.CONTROLS_Advanced', 'CONTROLS_Profiles', '@minSelections', '3'
 EXEC [$Table].config 'dbo.CONTROLS_Advanced', 'CONTROLS_Profiles', '@maxSelections', '5'
+-- Create Unique Key (forcing @maxSelections=1)
+/*
+ALTER TABLE dbo.CONTROLS_Profiles ADD CONSTRAINT
+            UK_CONTROLS_Profiles UNIQUE NONCLUSTERED
+    (
+                IdControl
+    )
+*/
+-- Remove Unique Key
+/*
+ALTER TABLE dbo.CONTROLS_Profiles
+DROP CONSTRAINT UK_CONTROLS_Profiles;
+*/
 
+
+--------------------------
+-- -- SELF-REF TABLE -- --
+--------------------------
+
+EXEC [$Table].config 'dbo.CONTROLS_Advanced', 'IdProfile', '@headerText', 'Profiles (Self-ref Table)'
+-- Scaffold self-ref table
+EXEC [$Table].config 'dbo.CONTROLS_Advanced', 'IdProfile', 'scaffold', 'true';
+-- Scaffold true for tree structure, false for flat structure
+EXEC [$Table].config 'dbo.CONTROLS_Advanced', 'IdProfile', '//ForeignKey[@Column_Name="IdParent"]/@scaffold', 'true';
 
 EXEC [$Ver:Beta_12].clearCache 'dbo.CONTROLS_Advanced'
 EXEC [$Ver:Beta_12].clearCache 'dbo.CONTROLS_Profiles'
 EXEC [$Ver:Beta_12].clearCache 'dbo.Profiles'
 EXEC [$Metadata].rebuild
 
+SELECT * FROM [$Ver:Beta_12].InformationSchema
 
--- dbo.CONTROLS_Cascaded 
+
+-- /////////////////////////////////////////////////// --
+--
+--				dbo.CONTROLS_Cascaded
+--				  CatalogosSistema.Pais
+--				    CatalogosSistema.Estado
+--				      CatalogosSistema.Municipio
+--
+-- /////////////////////////////////////////////////// --
 
 EXEC [$Table].config 'CatalogosSistema.Pais', '', 'displayText', 'Pais';
 EXEC [$Table].config 'CatalogosSistema.Estado', '', 'displayText', 'Estado';
@@ -138,14 +193,11 @@ EXEC [$Metadata].rebuild
 --formView/insert
 EXEC [$Ver:Beta_12].getXmlData @@userId=-1, @tableName='dbo.Empleado', @output=json, @getData=1, @getStructure=1, @rebuild=DEFAULT, @controlType=formView, @mode='insert', @pageIndex=DEFAULT, @pageSize=DEFAULT, @maxRecords=DEFAULT, @parameters=DEFAULT, @filters=DEFAULT, @sorters=DEFAULT, @fullPath=DEFAULT, @columnList=DEFAULT, @lang=DEFAULT
 
-
-
--- dbo.Empleado2
-
-EXEC [$Ver:Beta_12].getXmlData @@UserId=-1, @TableName='dbo.Empleado2', @Mode=DEFAULT, @ControlType=form, @PageIndex=DEFAULT, @PageSize=DEFAULT, @MaxRecords=DEFAULT, @Parameters=DEFAULT, @lang=DEFAULT, @output='json', @getStructure=1, @getData=1
-
-
-
+-- /////////////////////////////////////////////////// --
+--
+--			CentrosDeCostos.CentroDeCostos
+--
+-- /////////////////////////////////////////////////// --
 
 -- cardsView / readonly
 
@@ -170,9 +222,13 @@ EXEC [$Table].config 'CentrosDeCostos.CentroDeCostos', 'Tipo', '${table}[@contro
 EXEC [$Table].config 'CentrosDeCostos.CentroDeCostos', 'Tipo', '@mode', 'inherit';
 
 
-
-
--- dbo.CONTROLS_NestedForm
+-- /////////////////////////////////////////////////// --
+--
+--				dbo.CONTROLS_NestedForm
+--				  dbo.CONTROLS_NestedGrid
+--					dbo.CONTROLS_Grid
+--
+-- /////////////////////////////////////////////////// --
 
 -- formView / edit
 
@@ -188,14 +244,19 @@ EXEC [$Ver:Beta_12].clearCache 'dbo.CONTROLS_NestedForm'
 EXEC [$Metadata].rebuild
 
 
--- dbo.CONTROLS_NestedGrid
+-- /////////////////////////////////////////////////// --
+--
+--				dbo.CONTROLS_NestedGrid
+--				  dbo.CONTROLS_Grid
+--
+-- /////////////////////////////////////////////////// --
 
 -- formView / edit
 
 [$Ver:Beta_12].getXmlData @@userId=-1, @tableName='dbo.CONTROLS_NestedGrid', @output=json, @getData=1, @getStructure=1, @rebuild=DEFAULT, @controlType=formView, @mode='edit', @pageIndex=DEFAULT, @pageSize=DEFAULT, @maxRecords=DEFAULT, @parameters=DEFAULT, @filters='id=1', @sorters=DEFAULT, @fullPath=DEFAULT, @columnList=DEFAULT, @lang=DEFAULT
 
 
-EXEC [$Table].config 'dbo.CONTROLS_NestedGrid[@controlType="formView"]', 'CONTROLS_Grid', '@controlType', 'formView';
+EXEC [$Table].config 'dbo.CONTROLS_NestedGrid[@controlType="formView"]', 'CONTROLS_Grid', '@controlType', 'cardsView';
 EXEC [$Table].config 'CONTROLS_Grid', '', '@custom:titleField', 'Name';
 EXEC [$Table].config 'CONTROLS_Grid', '', '@custom:iconField', 'Image';
 EXEC [$Table].config 'CONTROLS_Grid', '', '@custom:descField1', 'Field1';
@@ -211,29 +272,20 @@ EXEC [$Ver:Beta_12].clearCache 'dbo.CONTROLS_Grid'
 EXEC [$Metadata].rebuild
 
 
+-- /////////////////////////////////////////////////// --
+--
+--				    dbo.Empleado2
+--
+-- /////////////////////////////////////////////////// --
+
+EXEC [$Ver:Beta_12].getXmlData @@UserId=-1, @TableName='dbo.Empleado2', @Mode=DEFAULT, @ControlType=form, @PageIndex=DEFAULT, @PageSize=DEFAULT, @MaxRecords=DEFAULT, @Parameters=DEFAULT, @lang=DEFAULT, @output='json', @getStructure=1, @getData=1
+
 --FileTemplate
 
 EXEC [$Table].config  'dbo.Empleado2', '', '@fileTemplate', 'ResumenEmpleado.html'
+EXEC [$Table].config  'dbo.Empleado2', '', '@fileTemplate', 'CredencialEmpleado.svg'
+
 
 EXEC [$Ver:Beta_12].clearCache 'dbo.Empleado2'
 
 EXEC [$Ver:Beta_12].getXmlData @@UserId=-1, @FullPath='', @TableName='dbo.Empleado2', @Mode=DEFAULT, @ControlType=fileTemplate, @PageIndex=DEFAULT, @PageSize=DEFAULT, @MaxRecords=DEFAULT, @Filters='id=1', @Parameters=DEFAULT, @lang=DEFAULT, @output='html', @getStructure=1, @getData=1
-
-
--- CLI
--- CONFIG LIST
-EXEC [$Table].exportConfig
-EXEC [$Table].config 
-EXEC [$Table].config 'dbo.Logs'
-EXEC [$Table].config 'dbo.Logs', 'Nombre'
-EXEC [$Table].clearConfig 'dbo.Logs', 'Nombre', '@whatever'
-EXEC [$Table].config 'dbo.Logs', 'Nombre', '@whatever', 'a'
--- CONFIG REMOVE
-EXEC [$Table].clearConfig  
-EXEC [$Table].clearConfig 'dbo.Logs'
-EXEC [$Table].clearConfig 'dbo.Logs', 'Nombre', '@whatever'
--- CACHE CLEAR
-EXEC [$Ver:Beta_12].clearCache
-EXEC [$Ver:Beta_12].clearCache 'dbo.Empleado2'
--- METADATA
-EXEC [$Metadata].rebuild
