@@ -5,12 +5,13 @@
 		<catalog title="CONTROLS_Basic[edit][N]" description="" catalogName="dbo.CONTROLS_Basic" mode="edit" controlType="gridView" />
 		<catalog title="CONTROLS_Basic[readonly][N]" description="" catalogName="dbo.CONTROLS_Basic" mode="readonly" controlType="gridView" filters="'IntegerReq>9'" pageSize="10" pageIndex="3" />
 		<catalog title="CONTROLS_Basic[browse][N]" description="" catalogName="dbo.CONTROLS_Basic" mode="browse" controlType="gridView" filters="'IntegerReq>40'" pageSize="10" />
+		<catalog title="CONTROLS_Basic[filters][N]" description="" catalogName="dbo.CONTROLS_Basic" mode="filters" controlType="gridView" />
 	</menu>
 	
 	<menu title="Form" description="">
 		<catalog title="CONTROLS_Basic[edit][N]" description="" catalogName="dbo.CONTROLS_Basic" mode="edit" controlType="formView" filters="" />
 		<catalog title="CONTROLS_Advanced[edit][N]" description="" catalogName="dbo.CONTROLS_Advanced" mode="edit" controlType="formView" filters="" />
-		<catalog title="CONTROLS_Cascaded[edit][1]" description="" catalogName="dbo.CONTROLS_Cascaded" mode="edit" controlType="formView" id="1" />
+		<catalog title="CONTROLS_Cascaded[edit][1]" description="" catalogName="dbo.CONTROLS_Cascaded" mode="edit" controlType="formView" filters="[Id=1]" />
 		<catalog title="CONTROLS_Basic[filters]" description="" catalogName="dbo.CONTROLS_Basic" mode="filters" controlType="formView" />
 	</menu>
 	
@@ -21,28 +22,28 @@
 	</menu>
 	
 	<menu title="Nested" description="">
-		<catalog title="CONTROLS_NestedForm[edit][1]" description="" catalogName="dbo.CONTROLS_NestedForm" mode="edit" controlType="formView" id="1" />
-		<catalog title="CONTROLS_NestedGrid[edit][1]" description="" catalogName="dbo.CONTROLS_NestedGrid" mode="edit" controlType="formView" identityKey="Id" id="1" />
+		<catalog title="CONTROLS_NestedForm[edit][1]" description="" catalogName="dbo.CONTROLS_NestedForm" mode="edit" controlType="formView" filters="[Id=1]" />
+		<catalog title="CONTROLS_NestedGrid[edit][1]" description="" catalogName="dbo.CONTROLS_NestedGrid" mode="edit" controlType="formView" identityKey="Id" filters="[Id=1]" />
 		<catalog title="CONTROLS_Grid[edit]" description="" catalogName="dbo.CONTROLS_Grid" mode="edit" controlType="gridView" />
 	</menu>
 	
 	<menu title="MasterDetail" description="">
-		<catalog title="CONTROLS_Advanced[edit][N]" description="" catalogName="dbo.CONTROLS_Advanced" mode="edit" controlType="masterDetail" />
+		<catalog title="CONTROLS_Basic[edit][N]" description="" catalogName="dbo.CONTROLS_Basic" mode="edit" controlType="masterDetail" />
 	</menu>
 	
 	<menu title="Template" description="">
-		<catalog title="Empleado2[readonly][1]" description="" catalogName="dbo.Empleado2" mode="readonly" controlType="fileTemplate" filters="[Id=1]" />
+		<catalog title="Empleado2[readonly][1]" description="" catalogName="dbo.Empleado2" mode="readonly" controlType="fileTemplate" />
 	</menu>
 	
 	
 	
-	<catalog title="Nested Grid + Checkboxes (N-M)" description="" catalogName="dbo.CONTROLS_JunctionTable" mode="edit" controlType="formView" id="1" />
-	<catalog title="Tags (N-M)" description="" catalogName="dbo.CONTROLS_Tags" mode="edit" controlType="formView" id="1" />
-	<catalog title="Multi-Selector (N-M)" description="" catalogName="dbo.CONTROLS_MultiSelector" mode="edit" controlType="formView" id="1" />
-	<catalog title="Autoreference Tree (1-1)" description="" catalogName="dbo.CONTROLS_Tree" mode="edit" controlType="formView" id="1" />
-	<catalog title="Autoreference Tree + Checkboxes (N-M)" description="" catalogName="dbo.CONTROLS_TreeSelector" mode="edit" controlType="formView" id="1" />
-	<catalog title="Schedule" description="" catalogName="dbo.CONTROLS_Schedule" mode="edit" controlType="formView" id="1" />
-	<catalog title="Print" description="" catalogName="dbo.CONTROLS_Print" mode="edit" controlType="formView" id="1" />
+	<catalog title="Nested Grid + Checkboxes (N-M)" description="" catalogName="dbo.CONTROLS_JunctionTable" mode="edit" controlType="formView" filters="[Id=1]" />
+	<catalog title="Tags (N-M)" description="" catalogName="dbo.CONTROLS_Tags" mode="edit" controlType="formView" filters="[Id=1]" />
+	<catalog title="Multi-Selector (N-M)" description="" catalogName="dbo.CONTROLS_MultiSelector" mode="edit" controlType="formView" filters="[Id=1]" />
+	<catalog title="Autoreference Tree (1-1)" description="" catalogName="dbo.CONTROLS_Tree" mode="edit" controlType="formView" filters="[Id=1]" />
+	<catalog title="Autoreference Tree + Checkboxes (N-M)" description="" catalogName="dbo.CONTROLS_TreeSelector" mode="edit" controlType="formView" filters="[Id=1]" />
+	<catalog title="Schedule" description="" catalogName="dbo.CONTROLS_Schedule" mode="edit" controlType="formView" filters="[Id=1]" />
+	<catalog title="Print" description="" catalogName="dbo.CONTROLS_Print" mode="edit" controlType="formView" filters="[Id=1]" />
 
 	<menu title="❤ Favoritos" expanded="true" expandable="false" categoryType="bookmarks">
 		<catalog title="Editar CC Horizontes" description="" catalogName="CentrosDeCostos.CentroDeCostos" mode="edit" controlType="formView" id="3" />

@@ -90,14 +90,22 @@ EXEC [$Ver:Beta_12].getXmlData @@userId=-1, @tableName='dbo.CONTROLS_Basic', @ou
 SELECT * FROM [$Metadata].Columns C WHERE C.Table_Name='CONTROLS_Basic'
 SELECT * FROM [$Metadata].Tables C WHERE C.Table_Name='CONTROLS_Basic'
 
+
+
 EXEC [$Table].config 'dbo.CONTROLS_Basic', 'Combobox', '@controlType', 'combobox';
-EXEC [$Table].config 'dbo.CONTROLS_Basic', 'Money', '@tab', 'Otros';
 EXEC [$Table].config 'dbo.CONTROLS_Basic', 'RadioGroup', '@controlType', 'radiogroup';
-EXEC [$Table].config 'dbo.CONTROLS_Basic', 'RadioGroup', '@moveBefore', 'Combobox';
-EXEC [$Table].config 'dbo.CONTROLS_Basic', 'ShortTextField', '@tab', 'General';
-EXEC [$Table].config 'dbo.CONTROLS_Basic', 'ShortTextField', '@tabPanel', 'General';
+
+EXEC [$Table].config 'dbo.CONTROLS_Basic', 'ShortTextField', '@tabPanel', 'Text';
+EXEC [$Table].config 'dbo.CONTROLS_Basic', 'ShortTextField', '@tab', 'Text';
+EXEC [$Table].config 'dbo.CONTROLS_Basic', 'IntegerReq', '@tab', 'Numbers';
+EXEC [$Table].config 'dbo.CONTROLS_Basic', 'Date', '@tab', 'Date / Time';
+EXEC [$Table].config 'dbo.CONTROLS_Basic', 'Combobox', '@tab', 'Foreign Keys';
+EXEC [$Table].config 'dbo.CONTROLS_Basic', 'EMail', '@tab', 'Px Types';
+
 EXEC [$Table].config 'dbo.CONTROLS_Basic[@controlType="gridView"]', 'ShortTextField', '@mode', 'inherit';
 EXEC [$Table].config 'dbo.CONTROLS_Basic[@controlType="gridView"]', 'Integer', '@mode', 'inherit';
+
+
 
 
 EXEC [$Ver:Beta_12].clearCache 'dbo.CONTROLS_Basic'
@@ -116,7 +124,9 @@ EXEC [$Metadata].rebuild
 
 EXEC [$Ver:Beta_12].getXmlData @@UserId=-1, @TableName='dbo.CONTROLS_Advanced', @Mode=edit, @ControlType=formView, @PageIndex=DEFAULT, @PageSize=DEFAULT, @MaxRecords=DEFAULT, @Parameters=DEFAULT, @lang=DEFAULT, @output='json', @getStructure=1, @getData=1
 
-EXEC [$Table].config 'dbo.CONTROLS_Advanced', 'Color', '@moveBefore', 'FileUpload'
+
+EXEC [$Table].config 'dbo.CONTROLS_Advanced', 'CONTROLS_Profiles', '@tab', 'Advanced 2';
+EXEC [$Table].config 'dbo.CONTROLS_Advanced', 'IdProfile', '@moveAfter', 'CONTROLS_Profiles'
 
 --------------------------
 -- -- JUNCTION TABLE -- --
