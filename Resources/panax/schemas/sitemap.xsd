@@ -1,0 +1,99 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:custom="urn:custom"
+  xmlns:extjs="urn:extjs"
+  xmlns="http://www.panaxit.com/sitemap"
+  xmlns:sitemap="http://www.panaxit.com/sitemap"
+  xmlns:px="http://www.panaxit.com"
+  xmlns:xml="http://www.w3.org/XML/1998/namespace"
+  targetNamespace="http://www.panaxit.com/sitemap"
+  elementFormDefault="qualified"
+  attributeFormDefault="unqualified">
+  <xs:import namespace="http://www.w3.org/XML/1998/namespace"/>
+  <xs:import namespace="http://www.panaxit.com" schemaLocation="panaxUI.xsd"/>
+
+  <xs:element name="root">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="menu" type="menu"/>
+        <xs:element name="navigateUrl" type="navigateUrl"/>
+        <xs:element name="catalog" type="catalog">
+          <!--<xs:unique name="filters">
+            --><!--Esto es para permitir un elemento o un atributo con el nombre filters pero no ambos TODO: Hacerlo funcionar porque no lo fuerza--><!--
+            <xs:selector xpath="."/>
+            <xs:field xpath="filters|@filters"/>
+          </xs:unique>-->
+        </xs:element>
+      </xs:choice>
+      <xs:attribute name="output" type="xs:string"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="menu">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="catalog" type="catalog">
+        <!--<xs:unique name="filters2">
+          --><!--Esto es para permitir un elemento o un atributo con el nombre filters pero no ambos TODO: Hacerlo funcionar porque no lo fuerza--><!--
+          <xs:selector xpath="."/>
+          <xs:field xpath="filters|@filters"/>
+        </xs:unique>-->
+      </xs:element>
+      <xs:element name="navigateUrl" type="navigateUrl"></xs:element>
+      <xs:element name="menu" type="menu"></xs:element>
+    </xs:choice>
+    <xs:attributeGroup ref="common"/>
+    <xs:attribute name="expanded" type="xs:string"/>
+    <xs:attribute name="expandable" type="xs:string"/>
+    <xs:attribute name="categoryType" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="navigateUrl">
+    <xs:attribute name="url" type="xs:string" />
+    <xs:attributeGroup ref="common"/>
+  </xs:complexType>
+
+  <xs:complexType mixed="true" name="catalog">
+    <xs:sequence>
+      <xs:element name="filters" type="filters" minOccurs="0"/>
+      <xs:element name="parameters" type="parameters" minOccurs="0">
+        <!--<xs:unique name="UniqueParam">
+          <xs:selector xpath="parameter"/>
+          <xs:field xpath="@name"/>
+        </xs:unique>-->
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="filters" type="xs:string"/>
+    <xs:attribute name="catalogName" type="xs:string" />
+    <xs:attribute name="controlType" type="px:Table.controlType" />
+    <xs:attribute name="mode" type="xs:string" />
+    <xs:attribute name="pageSize" type="xs:string"/>
+    <xs:attribute name="pk" type="xs:string"/>
+    <xs:attributeGroup ref="common"/>
+  </xs:complexType>
+
+  <xs:attributeGroup name="common">
+    <xs:attribute name="title" type="xs:string" use="required" />
+    <xs:attribute name="description" type="xs:string" />
+    <xs:attribute name="showInMenu" type="xs:boolean" />
+    <xs:attribute name="target" type="xs:string" />
+    <xs:attribute name="tag" type="xs:string" />
+  </xs:attributeGroup>
+
+  <xs:complexType name="parameters">
+    <xs:sequence>
+      <xs:element name="parameter" type="parameter" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType mixed="true" name="parameter">
+    <xs:attribute name="name" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType mixed="true" name="filters">
+    <xs:sequence minOccurs="0">
+      <xs:element name="script" type="script" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="script">
+    <xs:attribute name="lang" type="xs:string"/>
+  </xs:complexType>
+</xs:schema>

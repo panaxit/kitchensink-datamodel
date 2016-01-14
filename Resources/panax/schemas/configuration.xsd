@@ -1,0 +1,141 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:custom="urn:custom"
+  xmlns:extjs="urn:extjs"
+  xmlns="http://www.panaxit.com/configuration"
+  xmlns:px="http://www.panaxit.com"
+  xmlns:lay="http://www.panaxit.com/layout"
+  xmlns:sitemap="http://www.panaxit.com/sitemap"
+  xmlns:xml="http://www.w3.org/XML/1998/namespace"
+  targetNamespace="http://www.panaxit.com/configuration"
+  elementFormDefault="qualified"
+  attributeFormDefault="unqualified" >
+  <xs:import namespace="http://www.w3.org/XML/1998/namespace"/>
+  <xs:import namespace="http://www.panaxit.com" schemaLocation="panaxUI.xsd"/>
+  <xs:import namespace="http://www.panaxit.com/layout" schemaLocation="layout.xsd"/>
+  <xs:import namespace="http://www.panaxit.com/sitemap" schemaLocation="sitemap.xsd"/>
+  <!--schemaLocation="http://www.w3.org/2001/03/xml.xsd"-->
+
+
+  <xs:element name="configuration">
+    <xs:complexType>
+      <xs:choice maxOccurs="unbounded">
+        <xs:element ref="sitemap:root"/>
+        <xs:element name="config" type="config"/>
+      </xs:choice>
+    </xs:complexType>
+    <!--<xs:unique name="root">
+      <xs:selector xpath="root"/>
+      <xs:field xpath="@output"/>
+    </xs:unique>-->
+  </xs:element>
+
+  <xs:complexType name="config">
+    <xs:sequence>
+      <xs:element name="catalog" type="catalog" />
+      <xs:choice minOccurs="0" maxOccurs="1">
+        <xs:element name="record" type="record" minOccurs="0" />
+        <xs:element name="route" type="route" />
+        <xs:element name="column" type="column" />
+        <xs:element ref="lay:layout" />
+        <xs:group ref="table.set"/>
+      </xs:choice>
+    </xs:sequence>
+    <xs:attribute ref="xml:lang"/>
+  </xs:complexType>
+
+  <xs:complexType name="catalog">
+    <xs:sequence>
+      <xs:element name="when" type="when" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute name="schema" type="xs:string" use="required"/>
+    <xs:attribute name="name" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="column">
+    <xs:sequence>
+      <xs:element name="when" type="when" minOccurs="0"/>
+      <xs:group ref="column.set" />
+    </xs:sequence>
+    <xs:attribute name="name" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="record">
+    <xs:sequence>
+      <xs:element name="when" type="when" minOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="route">
+    <xs:choice>
+      <xs:element name="id" type="xs:string"/>
+      <xs:element name="xpath" type="xpath"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="when">
+    <xs:choice>
+      <xs:choice>
+        <xs:element name="xpath" type="xpath"/>
+        <xs:group ref="when.elements" maxOccurs="unbounded"/>
+      </xs:choice>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:group name="when.elements">
+    <xs:choice>
+      <xs:element name="attribute" type="attribute"/>
+      <xs:element name="attrib" type="attribute"/>
+      <xs:element name="or" type="when"/>
+      <xs:element name="and" type="when"/>
+      <xs:element name="xor" type="when"/>
+      <xs:element name="not" type="when"/>
+    </xs:choice>
+  </xs:group>
+
+  <xs:simpleType name="xpath">
+    <xs:restriction base="xs:string"/>
+  </xs:simpleType>
+
+  <xs:complexType name="attribute" mixed="true">
+    <xs:attribute name="name" type="xs:string" use="required"/>
+    <xs:attribute name="condition" type="propertyType"/>
+  </xs:complexType>
+
+  <xs:simpleType name="propertyType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="contains"/>
+      <xs:enumeration value="starts-with"/>
+      <xs:enumeration value="ends-with"/>
+      <xs:enumeration value="equals"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:group name="column.set">
+    <xs:choice>
+      <!--<xs:element name="controlType" type="xs:string"/>
+      <xs:element name="pageSize" type="xs:string"/>
+      <xs:element name="attribute" type="property" />-->
+      <xs:element name="attribute" type="column.property"/>
+    </xs:choice>
+  </xs:group>
+
+  <xs:group name="table.set">
+    <xs:choice>
+      <!--<xs:element name="controlType" type="px:Table.controlType"/>-->
+      <xs:element name="attribute" type="table.property"/>
+    </xs:choice>
+  </xs:group>
+  <!--px:Table.configurableAttributes-->
+  <xs:complexType name="table.property" mixed="true">
+    <xs:choice>
+      <xs:any minOccurs="0"/>
+    </xs:choice>
+    <xs:attribute name="name" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="column.property" mixed="true">
+    <xs:choice>
+      <xs:any minOccurs="0"/>
+    </xs:choice>
+    <xs:attribute name="name" type="xs:string" use="required"/>
+  </xs:complexType>
+</xs:schema>

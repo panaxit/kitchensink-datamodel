@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema 
+  xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+  xmlns:session="urn:session"
+  elementFormDefault="qualified" 
+  attributeFormDefault="qualified"
+  targetNamespace="http://www.panaxit.com/session" 
+  >
+  <xs:attribute name="userId" type="xs:string"/>
+  <xs:attribute name="profileId"/>
+  <xs:attribute name="impersonatedUserId" type="xs:string"/>
+  <xs:attribute name="impersonatedProfileId" type="xs:string"/>
+</xs:schema>

@@ -1,0 +1,407 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:custom="http://www.panaxit.com/custom" xmlns:debug="http://www.panaxit.com/debug" xmlns:extjs="urn:extjs"
+elementFormDefault="qualified" attributeFormDefault="qualified"
+	xmlns:msxsl="urn:schemas-microsoft-com:xslt">
+	<xs:import namespace="http://www.w3.org/XML/1998/namespace"/>
+
+	<xs:attribute name="headerText" type="xs:string"/>
+	<xs:attribute name="emptyText" type="xs:string"/>
+	<xs:attribute name="supportsInsert" type="bit"/>
+	<xs:attribute name="supportsUpdate" type="bit"/>
+	<xs:attribute name="supportsDelete" type="bit"/>
+	<xs:attribute name="controlType" type="xs:string"/>
+	<xs:attribute name="controlTypeHint" type="xs:string"/>
+	<xs:attribute name="mode" type="xs:string"/>
+	<xs:attribute name="forceMode" type="xs:string"/>
+	<xs:attribute name="attrib" type="xs:string"/>
+	<!--temp-->
+
+	<xs:simpleType name="bit">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="1"/>
+			<xs:enumeration value="0"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="CASE">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="\s*CASE WHEN .*"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="boolean">
+		<xs:union memberTypes="CASE xs:boolean"></xs:union>
+	</xs:simpleType>
+
+	<xs:simpleType name="order">
+		<xs:restriction base="xs:decimal">
+			<xs:minInclusive value="0"/>
+			<xs:fractionDigits value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="sortDirection">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="ASC"/>
+			<xs:enumeration value="asc"/>
+			<xs:enumeration value="DESC"/>
+			<xs:enumeration value="desc"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="filtersBehavior">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="append"/>
+			<xs:enumeration value="replace"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="encryption">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="MD5"/>
+			<!--<xs:enumeration value="SHA1"/>-->
+		</xs:restriction>
+	</xs:simpleType>
+
+	<!--<xs:element name="virtualField">
+    <xs:simpleType name="Column_Name">
+      <xs:restriction base="xs:string">
+        <xs:pattern value="[A-Z][a-zA-Z0-9]*"/>
+      </xs:restriction>
+    </xs:simpleType>
+  </xs:element>-->
+
+
+	<xs:element name="ForeignKey">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="ForeignTable" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attribute name="Column_Name" type="xs:string"/>
+			<xs:attribute name="defaultValue" type="xs:string"/>
+			<xs:attribute name="scaffold" type="xs:string"/>
+			<xs:attribute name="parent" type="xs:string"/>
+			<xs:attribute name="mode" type="xs:string"/>
+			<xs:attribute name="binding" type="xs:string"/>
+			<!--binding deprecated-->
+			<xs:attribute ref="attrib" />
+			<xs:anyAttribute namespace="urn:panax urn:session http://www.panaxit.com/custom http://www.panaxit.com/debug urn:extjs" processContents="skip"/>
+			<!--temp-->
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="ForeignKeys">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="ForeignKey" minOccurs="1" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="mode" type="xs:string"/>
+			<xs:attribute ref="attrib" />
+			<!--temp-->
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="ForeignTable">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="PrimaryKeys" minOccurs="0"/>
+				<!-- cuando se implemente completamente el mínimo es 1-->
+				<xs:element ref="ForeignKeys" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attribute ref="headerText"/>
+			<xs:attribute ref="emptyText"/>
+
+			<xs:attribute name="supportsInsert" type="bit"/>
+			<xs:attribute name="supportsUpdate" type="bit"/>
+			<xs:attribute name="supportsDelete" type="bit"/>
+			<xs:attribute name="disableInsert" type="xs:string"/>
+			<xs:attribute name="disableUpdate" type="xs:string"/>
+			<xs:attribute name="disableDelete" type="xs:string"/>
+			<xs:attribute name="enforceConstraint" type="xs:string"/>
+
+			<xs:attribute name="loadData" type="boolean"/>
+			<xs:attribute name="binding" type="xs:string"/>
+			<!-- Debe ser el nombre de una columna de la tabla con el fin de ligar el control de la aplicación con ésta -->
+			<xs:attribute name="Table_Schema" type="xs:string"/>
+			<xs:attribute name="Schema" type="xs:string"/>
+			<xs:attribute name="Table_Name" type="xs:string"/>
+			<xs:attribute name="Name" type="xs:string"/>
+			<xs:attribute name="controlType" type="xs:string"/>
+			<xs:attribute name="primaryKey" type="xs:string"/>
+			<xs:attribute name="text" type="xs:string"/>
+			<xs:attribute name="filters" type="xs:string"/>
+			<xs:attribute name="filtersBehavior" type="filtersBehavior" default="append"/>
+			<xs:attribute name="disableAppFilters" type="xs:string"/>
+			<xs:attribute name="orderBy" type="xs:string"/>
+			<xs:attribute ref="attrib" />
+			<xs:anyAttribute namespace="urn:panax urn:session http://www.panaxit.com/custom http://www.panaxit.com/debug urn:extjs" processContents="skip"/>
+			<!--temp-->
+			<!--<xs:anyAttribute namespace="##targetNamespace urn:panax urn:session" processContents="lax"/>-->
+		</xs:complexType>
+	</xs:element>
+
+	<xs:complexType name="Record">
+		<xs:complexContent>
+			<xs:extension base="custom:Fields.customAttributes">
+				<!--Para compatibilidad puede aceptar atributos definidos en el archivo custom sin tener que definirlos con el esquema "custom"-->
+				<xs:sequence>
+					<xs:element name="Field" type="Field" minOccurs="1" maxOccurs="unbounded" />
+				</xs:sequence>
+				<xs:attribute ref="headerText"/>
+				<xs:attribute ref="forceMode"/>
+				<xs:attribute name="disableInsert" type="xs:string"/>
+				<xs:attribute name="disableUpdate" type="xs:string"/>
+				<xs:attribute name="disableDelete" type="xs:string"/>
+				<xs:attribute name="fieldSet" type="xs:string"/>
+
+				<xs:attribute name="leido" type="xs:string"/>
+				<!-- temp -->
+				<xs:attribute name="mode" type="xs:string"/>
+				<xs:attribute ref="attrib" />
+				<!--temp-->
+				<xs:anyAttribute namespace="urn:panax urn:session http://www.panaxit.com/custom http://www.panaxit.com/debug urn:extjs" processContents="skip"/>
+				<!--<xs:anyAttribute namespace="##targetNamespace urn:panax urn:session http://www.panaxit.com/custom urn:extjs" processContents="strict"/>-->
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:element name="Parameters">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Parameter" type="Parameter" minOccurs="1" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:complexType name="Parameter">
+		<xs:attribute name="parameterName" type="xs:string" use="required"/>
+		<xs:attribute name="dataType" type="xs:string" use="required"/>
+		<xs:attribute name="length" type="xs:string"/>
+		<xs:attribute name="ordinalPosition" type="xs:decimal" use="required"/>
+	</xs:complexType>
+
+	<xs:element name="PrimaryKeys">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="PrimaryKey" type="PrimaryKey" minOccurs="1" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:complexType name="PrimaryKey">
+		<xs:attribute name="Column_Name" type="xs:string" />
+	</xs:complexType>
+
+	<xs:attributeGroup name="shared">
+		<xs:attribute ref="supportsInsert"/>
+		<xs:attribute ref="supportsUpdate"/>
+		<xs:attribute ref="supportsDelete"/>
+		<xs:attribute name="supportsDetails" type="xs:string"/>
+		<!-- temp -->
+		<xs:attribute name="disableInsert" type="xs:string"/>
+		<xs:attribute name="disableUpdate" type="xs:string"/>
+		<xs:attribute name="disableDelete" type="xs:string"/>
+		<xs:attribute name="disableDetails" type="xs:string"/>
+		<xs:attribute ref="headerText"/>
+		<xs:attribute ref="emptyText"/>
+		<xs:attribute name="dataType" type="xs:string"/>
+		<xs:attribute name="class" type="xs:string"/>
+		<xs:attribute name="relationshipType" type="xs:string"/>
+		<xs:attribute ref="controlType"/>
+		<xs:attribute ref="controlTypeHint"/>
+		<xs:attribute ref="mode"/>
+		<xs:attribute ref="forceMode"/>
+		<xs:attribute name="groupTabPanel" type="xs:string"/>
+		<xs:attribute name="subGroupTabPanel" type="xs:string"/>
+		<xs:attribute name="portlet" type="xs:string"/>
+		<xs:attribute name="tabPanel" type="xs:string"/>
+		<xs:attribute name="tab" type="xs:string"/>
+		<xs:attribute name="fieldSet" type="xs:string"/>
+		<xs:attribute name="fieldContainer" type="xs:string"/>
+		<xs:attribute name="fieldContainer.Orientation" type="xs:string"/>
+		<xs:attribute name="fieldContainer.headerText" type="xs:string"/>
+		<xs:attribute name="fieldContainerEnd" type="xs:string"/>
+		<xs:attribute name="fieldSetOrientation" type="xs:string"/>
+		<!-- revisar -->
+		<xs:attribute ref="attrib" />
+		<!--temp-->
+	</xs:attributeGroup>
+
+	<xs:complexType name="Field">
+		<xs:choice>
+			<xs:element ref="Table" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="ForeignTable" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:choice>
+		<xs:attribute name="Column_Name" type="xs:string"/>
+		<xs:attribute name="isNullable" type="bit"/>
+		<xs:attribute name="isPrimaryKey" type="xs:string"/>
+		<xs:attribute name="scaffold" type="xs:string"/>
+		<!-- revisar -->
+		<xs:attribute name="primaryKey" type="xs:string"/>
+		<!-- revisar -->
+		<xs:attribute name="isIdentity" type="bit"/>
+		<xs:attribute name="mutuallyExclusiveGroup" type="xs:string"/>
+
+		<xs:attribute name="description" type="xs:string"/>
+		<xs:attribute name="ordinalPosition" type="order"/>
+		<xs:attribute name="hidden" type="boolean"/>
+		<xs:attribute name="hideLabel" type="boolean"/>
+		<xs:attribute name="moveAfter" type="xs:string"/>
+		<xs:attribute name="moveBefore" type="xs:string"/>
+		<xs:attribute name="sortOrder" type="order"/>
+		<xs:attribute name="sortDirection" type="sortDirection"/>
+		<xs:attribute name="autoRowSpan" type="xs:string"/>
+		<xs:attribute name="rowSpanBy" type="xs:string"/>
+		<xs:attribute name="navigateURL" type="xs:string"/>
+
+		<xs:attribute name="format" type="xs:string"/>
+		<xs:attribute name="decimalPositions" type="xs:string"/>
+		<xs:attribute name="maxValue" type="xs:string"/>
+		<xs:attribute name="minValue" type="xs:string"/>
+		<xs:attribute name="increment" type="xs:string"/>
+		<!-- Para controles que incrementan o decrementan un valor -->
+		<xs:attribute name="maxSelections" type="xs:decimal"/>
+		<xs:attribute name="minSelections" type="xs:decimal"/>
+		<xs:attribute name="allowNegatives" type="xs:boolean"/>
+
+		<xs:attribute name="width" type="xs:decimal"/>
+		<xs:attribute name="length" type="xs:decimal"/>
+		<xs:attribute name="height" type="xs:decimal"/>
+		<xs:attribute name="defaultValue" type="xs:string"/>
+		<xs:attribute name="formula" type="xs:string"/>
+		<xs:attribute name="isRequired" type="xs:string"/>
+		<xs:attribute name="autoGenerateField" type="boolean"/>
+		<xs:attribute name="loadChildren" type="boolean"/>
+		<xs:attribute name="loadData" type="boolean"/>
+		<xs:attribute name="isSubmitable" type="boolean"/>
+		<xs:attribute name="encryption" type="encryption"/>
+		<xs:attribute name="confirmPassword" type="boolean"/>
+
+		<xs:attribute name="primaryTable" type="xs:string"/>
+		<xs:attribute name="foreignSchema" type="xs:string"/>
+		<xs:attribute name="foreignTable" type="xs:string"/>
+		<xs:attribute name="foreignReference" type="xs:string"/>
+		<xs:attribute name="parentFolder" type="xs:string"/>
+		<xs:attribute name="fixedFileName" type="xs:string"/>
+
+		<xs:attribute name="location" type="xs:string"/>
+
+
+		<xs:attribute name="foreignTableStopPropagation" type="xs:string"/>
+		<!-- revisar -->
+		<xs:attribute name="foreignTableHint" type="xs:string"/>
+		<!-- revisar -->
+		<xs:attribute name="groupByColumn" type="xs:string"/>
+		<!-- temp -->
+		<xs:attribute name="mapColumn" type="xs:string"/>
+		<!-- revisar -->
+		<xs:attribute name="displayName" type="xs:string"/>
+		<!-- revisar -->
+		<xs:attribute name="defaultMode" type="xs:string"/>
+		<!-- revisar -->
+
+		<xs:attributeGroup ref="shared"/>
+		<xs:anyAttribute namespace="urn:panax urn:session http://www.panaxit.com/custom http://www.panaxit.com/debug urn:extjs" processContents="skip"/>
+		<!--##targetNamespace -->
+	</xs:complexType>
+
+	<xs:element name="Table">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="custom:Table.customAttributes">
+					<xs:sequence>
+						<xs:element name="query" minOccurs="0" />
+						<xs:element ref="PrimaryKeys" minOccurs="0" />
+						<xs:element ref="Parameters" minOccurs="0" />
+						<xs:element name="Fields" type="Record" minOccurs="0" />
+						<xs:element name="Record" type="Record" minOccurs="0" />
+						<!--<xs:element ref="layout" minOccurs="0"/>-->
+					</xs:sequence>
+					<xs:attribute name="Table_Name" type="xs:string" use="required"/>
+					<xs:attribute name="Name" type="xs:string"/>
+					<xs:attribute name="Table_Schema" type="xs:string" use="required"/>
+					<xs:attribute name="Schema" type="xs:string"/>
+					<xs:attribute name="Base_Type" type="xs:string" />
+					<!--use="required"-->
+					<xs:attribute name="output" type="xs:string"/>
+					<xs:attribute name="dbManager" type="xs:string"/>
+					<xs:attribute name="parameters" type="xs:string"/>
+					<xs:attribute name="identityKey" type="xs:string"/>
+					<xs:attribute name="primaryKey" type="xs:string"/>
+					<xs:attribute name="identityTable" type="xs:string"/>
+					<xs:attribute name="displayText" type="xs:string"/>
+					<xs:attribute name="orderBy" type="xs:string"/>
+					<xs:attribute name="autoScaffoldFields" type="xs:boolean"/>
+
+					<xs:attribute name="pageSize" type="xs:string"/>
+					<xs:attribute name="idUser" type="xs:string"/>
+					<xs:attribute name="idCurrentUser" type="xs:string"/>
+					<xs:attribute name="currentUserId" type="xs:string"/>
+					<xs:attribute name="showHeader" type="xs:string"/>
+					<xs:attribute name="showFooter" type="xs:string"/>
+					<xs:attribute name="showRowNumbers" type="xs:string"/>
+					<xs:attribute name="defaultForeignKey" type="xs:string"/>
+					<xs:attribute name="onSubmit" type="xs:string"/>
+
+					<xs:attribute ref="xml:lang"/>
+					<xs:attribute name="Underlying_Table" type="xs:string"/>
+					<xs:attribute name="fileTemplate" type="xs:string"/>
+					<xs:attribute name="filters" type="xs:string"/>
+					<xs:attribute name="autoCreateFilters" type="xs:boolean"/>
+					<xs:attribute name="filtersBehavior" type="filtersBehavior" default="append"/>
+					<xs:attribute name="layout" type="xs:string"/>
+					<xs:attributeGroup ref="shared"/>
+					<xs:attribute name="displayName" type="xs:string"/>
+					<xs:anyAttribute namespace="urn:panax urn:session http://www.panaxit.com/custom http://www.panaxit.com/debug urn:extjs" processContents="skip"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="root">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Tables">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element ref="Table" minOccurs="0" maxOccurs="unbounded"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- sitemap - TODO: Ligarlo con el documento que sube el usuario para validarlo -->
+	<xs:element name="layout">
+		<xs:complexType>
+			<xs:all>
+				<xs:element ref="siteMap" minOccurs="1" />
+			</xs:all>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="siteMap">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="siteMapNode" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="siteMapNode">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="siteMapNode" minOccurs="0" />
+			</xs:sequence>
+			<xs:attribute name="title" type="xs:string" use="required"/>
+			<xs:attribute name="description" type="xs:string"/>
+			<xs:attribute name="catalogName" type="xs:string"/>
+			<xs:attribute name="target" type="xs:string"/>
+			<xs:attribute name="showInMenu" type="xs:boolean"/>
+			<xs:attribute name="filters" type="xs:string"/>
+			<xs:attribute name="tag" type="xs:string"/>
+			<xs:attribute name="url" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+
+</xs:schema>

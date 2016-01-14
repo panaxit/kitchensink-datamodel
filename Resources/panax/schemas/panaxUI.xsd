@@ -1,0 +1,809 @@
+<xs:schema
+	targetNamespace="http://www.panaxit.com"
+  xmlns="http://www.panaxit.com"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:xml="http://www.w3.org/XML/1998/namespace"
+
+  xmlns:px="http://www.panaxit.com"
+  xmlns:layout="http://www.panaxit.com/layout"
+  xmlns:session="http://www.panaxit.com/session"
+  xmlns:custom="http://www.panaxit.com/custom"
+  xmlns:debug="http://www.panaxit.com/debug"
+  xmlns:extjs="http://www.panaxit.com/extjs"
+  xmlns:balsamiq="http://www.panaxit.com/balsamiq"
+
+  elementFormDefault="qualified"
+  attributeFormDefault="unqualified"
+  >
+  <xs:import namespace="http://www.w3.org/XML/1998/namespace"/>
+  <xs:import namespace="http://www.panaxit.com/custom" schemaLocation="..\..\..\Config\custom.xsd"/>
+  <xs:import namespace="http://www.panaxit.com/layout" schemaLocation="layout.xsd"/>
+  <xs:import namespace="http://www.panaxit.com/session" schemaLocation="session.xsd"/>
+
+  <!--schemaLocation="http://www.w3.org/2001/03/xml.xsd"-->
+
+  <xs:element name="dataTable" type="px:DataTable"/>
+
+  <xs:complexType name="DataTable">
+    <xs:complexContent>
+      <xs:extension base="custom:Table.customAttributes">
+        <xs:sequence>
+          <xs:element name="layout" type="layout:layout" minOccurs="0"/>
+          <xs:element name="Fields" type="px:Fields" minOccurs="0" />
+          <xs:element ref="px:Routes" minOccurs="0"/>
+          <xs:element ref="px:PrimaryKeys" minOccurs="0"/>
+          <xs:element ref="px:Parameters" minOccurs="0"/>
+          <xs:element name="data" type="px:Data" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="TotalRecords" type="xs:integer"/>
+        <xs:attribute name="pageIndex" type="xs:integer"/>
+
+        <xs:attributeGroup ref="px:Table.baseAttributes"/>
+        <xs:attributeGroup ref="px:Table.configurableAttributes"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="BaseField">
+    <xs:attribute name="Id" type="xs:string" use="required"/>
+    <xs:attributeGroup ref="px:Column.baseAttributes"/>
+    <xs:attributeGroup ref="px:Column.configurableAttributes"/>
+  </xs:complexType>
+
+  <xs:complexType name="Relationship">
+    <xs:complexContent>
+      <xs:extension base="px:BaseField">
+        <xs:sequence maxOccurs="unbounded">
+          <xs:element ref="px:Mappings" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="Relationship" type="Relationship" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="data" type="px:Data" minOccurs="0"/>
+          <xs:element name="dataTable" type="px:DataTable" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attributeGroup ref="px:Relationship.baseAttributes"/>
+        <xs:attributeGroup ref="px:Relationship.configurableAttributes"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Fields">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="field" type="px:BaseField"/>
+      <xs:element name="binary" type="px:Binary"/>
+      <xs:element name="boolean" type="px:Boolean"/>
+      <xs:element name="date" type="px:Date"/>
+      <xs:element name="decimal" type="px:Decimal"/>
+      <xs:element name="email" type="px:Email"/>
+      <xs:element name="file" type="px:File"/>
+      <xs:element name="formula" type="px:Formula"/>
+      <xs:element name="geography" type="px:Geography"/>
+      <xs:element name="geometry" type="px:Geometry"/>
+      <xs:element name="identity" type="px:Identity"/>
+      <xs:element name="image" type="px:Image"/>
+      <xs:element name="integer" type="px:Integer"/>
+      <xs:element name="link" type="px:Link"/>
+      <xs:element name="money" type="px:Money"/>
+      <xs:element name="password" type="px:Password"/>
+      <xs:element name="relationship" type="px:Relationship"/>
+      <xs:element name="string" type="px:String"/>
+      <xs:element name="time" type="px:Time"/>
+      <xs:element name="tinyInteger" type="px:TinyInteger"/>
+    </xs:choice>
+    <xs:anyAttribute namespace="http://www.panaxit.com/session http://www.panaxit.com/custom http://www.panaxit.com/extjs http://www.panaxit.com/balsamiq http://www.panaxit.com/debug" processContents="skip"/>
+  </xs:complexType>
+
+  <xs:complexType name="Data">
+    <xs:sequence>
+      <xs:element name="dataRow" type="px:DataRow" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="DataRow">
+    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="dataField" type="px:Field" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!--#REGION Table view Types-->
+  <xs:complexType name="GridView">
+    <xs:complexContent>
+      <xs:extension base="px:DataTable">
+        <xs:attributeGroup ref="tableattributes.rowNumbers"/>
+        <xs:attributeGroup ref="tableattributes.gridview"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="FormView">
+    <xs:complexContent>
+      <xs:extension base="px:DataTable">
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="TemplateView">
+    <xs:complexContent>
+      <xs:extension base="px:DataTable">
+        <xs:attributeGroup ref="tableattributes.file"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ScheduleView">
+    <xs:complexContent>
+      <xs:extension base="px:DataTable">
+        <xs:attributeGroup ref="tableattributes.scheduleview"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="DiagramView">
+    <xs:complexContent>
+      <xs:extension base="px:DataTable">
+        <xs:attributeGroup ref="tableattributes.position"/>
+        <xs:attributeGroup ref="tableattributes.imagefields"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CanvasView">
+    <xs:complexContent>
+      <xs:extension base="px:DataTable">
+        <xs:attributeGroup ref="tableattributes.position"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <!--#ENDREGION Table view Types-->
+
+  <!--#REGION Table element Types-->
+  <xs:element name="Routes">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Route" type="px:Route" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="Route">
+    <xs:sequence>
+      <xs:element name="Param" type="Navigation.Parameter" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Id" use="required"/>
+    <xs:attribute name="Method" type="xs:string"/>
+    <xs:attribute name="url" type="xs:string"/>
+    <xs:attribute name="controlType" type="px:Route.controlType" />
+    <xs:attribute name="enabled" type="px:boolean" />
+  </xs:complexType>
+
+  <xs:element name="Mappings">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Map" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:attribute name="Key" type="xs:string" use="required" />
+            <xs:attribute name="Map" type="xs:string" use="required" />
+            <xs:attribute name="bind" type="xs:string"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="Parameters">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Parameter" type="Procedure.Parameter" minOccurs="1" maxOccurs="unbounded" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="Procedure.Parameter">
+    <xs:attribute name="name" type="xs:string" use="required"/>
+    <xs:attribute name="dataType" type="xs:string" use="required"/>
+    <xs:attribute name="datalength" type="xs:string"/>
+    <xs:attribute name="ordinalPosition" type="xs:decimal" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="Navigation.Parameter" mixed="true">
+    <xs:attribute name="name" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:element name="PrimaryKeys">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="PrimaryKey" type="PrimaryKey" minOccurs="1" maxOccurs="unbounded" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="PrimaryKey">
+    <xs:attribute name="Column_Name" type="xs:string" />
+  </xs:complexType>
+  <!--#ENDREGION Table element Types-->
+
+  <!--#REGION Field Types-->
+  <xs:complexType name="DataField">
+    <xs:complexContent>
+      <xs:extension base="px:BaseField">
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="value" type="xs:string" use="required"/>
+        <xs:attribute name="text" type="xs:string"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Field">
+    <xs:complexContent>
+      <xs:extension base="px:BaseField">
+        <xs:attribute name="name" type="xs:string" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Binary">
+    <xs:complexContent>
+      <xs:extension base="px:Field"/>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Boolean">
+    <xs:complexContent>
+      <xs:extension base="px:Field"/>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Date">
+    <xs:complexContent>
+      <xs:extension base="px:Field">
+        <xs:attributeGroup ref="px:fieldattributes.range"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Decimal">
+    <xs:complexContent>
+      <xs:extension base="px:Numeric">
+        <xs:attribute name="precision" type="xs:integer"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Email">
+    <xs:complexContent>
+      <xs:extension base="px:Field">
+        <xs:attribute name="confirmField" type="xs:string"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="File">
+    <xs:complexContent>
+      <xs:extension base="px:Field">
+        <xs:attributeGroup ref="px:fieldattributes.width"/>
+        <xs:attributeGroup ref="px:fieldattributes.height"/>
+        <xs:attributeGroup ref="px:fieldattributes.size"/>
+        <xs:attributeGroup ref="px:fieldattributes.file"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Formula">
+    <xs:complexContent>
+      <xs:extension base="px:Field">
+        <xs:attributeGroup ref="px:fieldattributes.formula"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Geography">
+    <xs:complexContent>
+      <xs:extension base="px:Field"/>
+
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Geometry">
+    <xs:complexContent>
+      <xs:extension base="px:Field"/>
+
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Identity">
+    <xs:complexContent>
+      <xs:extension base="px:Field"> </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Image">
+    <xs:complexContent>
+      <xs:extension base="px:File">
+        <xs:attribute name="thumbnailPath" type="xs:string"/>
+        <xs:attribute name="showThumbnail" type="xs:string"/>
+        <xs:attribute name="noImagePath" type="xs:string"/>
+        <xs:attribute name="errorImagePath" type="xs:string"/>
+        <xs:attribute name="altText" type="xs:string"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Integer">
+    <xs:complexContent>
+      <xs:extension base="px:Numeric">
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Link">
+    <xs:complexContent>
+      <xs:extension base="px:Field">
+        <xs:attributeGroup ref="fieldattributes.link"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Money">
+    <xs:complexContent>
+      <xs:extension base="px:Decimal">
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Numeric">
+    <xs:complexContent>
+      <xs:extension base="px:Field">
+        <xs:attributeGroup ref="fieldattributes.range"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Password">
+    <xs:complexContent>
+      <xs:extension base="px:Field">
+        <xs:attributeGroup ref="fieldattributes.length"/>
+        <xs:attributeGroup ref="fieldattributes.password"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Time">
+    <xs:complexContent>
+      <xs:extension base="px:Field">
+        <xs:attributeGroup ref="fieldattributes.range"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="TinyInteger">
+    <xs:complexContent>
+      <xs:extension base="px:Integer">
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="String">
+    <xs:complexContent>
+      <xs:extension base="px:BaseField">
+        <xs:attributeGroup ref="fieldattributes.length"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <!--#ENDREGION Field Types-->
+
+  <!--#REGION element values-->
+  <xs:simpleType name="Route.controlType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="button"/>
+      <xs:enumeration value="hyperlink"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Route.Method">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="new"/>
+      <xs:enumeration value="edit"/>
+      <!--<xs:enumeration value="delete"/>-->
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="inherit">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="inherit"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="bit">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="1"/>
+      <xs:enumeration value="0"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="when">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="\s*CASE WHEN .*"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="boolean">
+    <xs:union memberTypes="px:when xs:boolean px:inherit"></xs:union>
+  </xs:simpleType>
+
+  <xs:simpleType name="order">
+    <xs:restriction base="xs:decimal">
+      <xs:minInclusive value="0"/>
+      <xs:fractionDigits value="1"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="sortDirection">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="asc"/>
+      <xs:enumeration value="desc"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Table.controlType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="gridview"/>
+      <xs:enumeration value="formview"/>
+      <xs:enumeration value="scheduleview"/>
+      <xs:enumeration value="diagramview"/>
+      <xs:enumeration value="canvasview"/>
+      <xs:enumeration value="cardview"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Table.Mode">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="new"/>
+      <xs:enumeration value="edit"/>
+      <xs:enumeration value="filters"/>
+      <xs:enumeration value="readonly"/>
+      <xs:enumeration value="fieldSelector"/>
+      <xs:enumeration value="browse"/>
+      <xs:enumeration value="print"/>
+      <xs:enumeration value="custom"/>
+      <xs:enumeration value="help"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Table.Output">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="extjs"/>
+      <xs:enumeration value="balsamiq"/>
+      <xs:enumeration value="html"/>
+      <xs:enumeration value="wpf"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Relationship.Type">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="hasMany"/>
+      <xs:enumeration value="hasOne"/>
+      <xs:enumeration value="belongsTo"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="filtersBehavior">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="append"/>
+      <xs:enumeration value="replace"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="encryption">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="MD5"/>
+      <!--<xs:enumeration value="SHA1"/>-->
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="relationshipType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="hasOne"/>
+      <xs:enumeration value="hasMany"/>
+      <xs:enumeration value="belongsTo"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="currency">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="MXN"/>
+      <xs:enumeration value="USD"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <!--http://character-code.com/currency-html-codes.php-->
+  <xs:simpleType name="currencysymbol">
+    <xs:restriction base="xs:string">
+      <!--Dollar sign-->
+      <xs:enumeration value="&#36;"/>
+      <!--Cent Sign-->
+      <xs:enumeration value="&#162;"/>
+      <!--Pound Sterling-->
+      <xs:enumeration value="&#163;"/>
+      <!--Yen Symbol-->
+      <xs:enumeration value="&#165;"/>
+      <!--Euro Symbol-->
+      <xs:enumeration value="&#128;"/>
+      <!--Peseta Sign-->
+      <xs:enumeration value="&#8359;"/>
+
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!--#ENDREGION element values-->
+
+  <!--#REGION attributeGroups-->
+  <xs:attributeGroup name="Table.baseAttributes">
+    <xs:attribute name="Schema" type="xs:string" use="required"/>
+    <xs:attribute name="Name" type="xs:string" use="required"/>
+    <xs:attribute name="Mode" type="px:Table.Mode"/>
+    <xs:attribute name="Output" type="px:Table.Output" use="required"/>
+    <xs:attribute name="Version" type="xs:string"/>
+    <xs:attribute name="BaseType" type="xs:string" />
+    <xs:attribute name="DataType" type="xs:string"/>
+    <xs:attribute name="DBManager" type="xs:string"/>
+    <xs:attribute name="IdentityKey" type="xs:string"/>
+    <xs:attribute name="IdentityTable" type="xs:string"/>
+    <xs:attribute name="UnderlyingTable" type="xs:string"/>
+    <xs:attribute name="SupportsInsert" type="px:bit"/>
+    <xs:attribute name="SupportsUpdate" type="px:bit"/>
+    <xs:attribute name="SupportsDelete" type="px:bit"/>
+  </xs:attributeGroup>
+
+  <xs:attributeGroup name="Table.configurableAttributes">
+    <xs:attribute ref="xml:lang"/>
+    <xs:attribute name="controlType" type="px:Table.controlType" use="required"/>
+    <xs:attribute name="headerText" type="xs:string"/>
+    <xs:attribute name="emptyText" type="xs:string"/>
+    <xs:attribute name="required" type="px:boolean"/>
+    <xs:attribute name="editable" type="px:boolean"/>
+    <xs:attribute name="description" type="xs:string"/>
+
+    <xs:attribute name="parameters" type="xs:string"/>
+    <xs:attribute name="displayName" type="xs:string"/>
+    <xs:attribute name="id" type="xs:string"/>
+    <xs:attribute name="alias" type="xs:string"/>
+    <xs:attribute name="displayText" type="xs:string"/>
+    <xs:attribute name="orderBy" type="xs:string"/>
+
+    <xs:attribute name="pageSize" type="xs:string"/>
+    <xs:attribute name="maxSelections" type="xs:decimal"/>
+    <xs:attribute name="minSelections" type="xs:decimal"/>
+
+    <xs:attribute name="filters" type="xs:string"/>
+    <xs:attribute name="filtersBehavior" type="px:filtersBehavior" default="append"/>
+
+    <xs:attribute name="disableInsert" type="xs:string"/>
+    <xs:attribute name="disableUpdate" type="xs:string"/>
+    <xs:attribute name="disableDelete" type="xs:string"/>
+
+    <xs:attribute name="class" type="xs:string"/>
+    <xs:attribute name="css" type="xs:string"/>
+    <xs:anyAttribute namespace="http://www.panaxit.com/session http://www.panaxit.com/custom http://www.panaxit.com/extjs http://www.panaxit.com/balsamiq http://www.panaxit.com/debug"
+  processContents="skip"/>
+  </xs:attributeGroup>
+
+  <xs:attributeGroup name="Column.baseAttributes">
+    <xs:attribute name="Name" type="xs:string"/>
+    <xs:attribute name="DataType" type="xs:string"/>
+    <xs:attribute name="DataLength" type="xs:string"/>
+
+    <xs:attribute name="IsNullable" type="px:bit"/>
+    <xs:attribute name="IsPrimaryKey" type="xs:string"/>
+    <xs:attribute name="IsIdentity" type="px:bit"/>
+
+    <xs:attribute name="SupportsInsert" type="px:bit"/>
+    <xs:attribute name="SupportsUpdate" type="px:bit"/>
+    <xs:attribute name="SupportsDelete" type="px:bit"/>
+  </xs:attributeGroup>
+
+  <xs:attributeGroup name="Column.configurableAttributes">
+    <!-- scaffold: Define si el campo se va a renderear -->
+    <xs:attribute name="scaffold" type="xs:string"/>
+    <!-- critical: Define si el campo siempre va a ser enviado -->
+    <xs:attribute name="critical" type="xs:string"/>
+    <!-- persists: Define si el campo a ser enviado, el default debe ser true a menos de que sea una columna calculada -->
+    <xs:attribute name="persists" type="xs:string" default="true"/>
+
+    <xs:attribute name="ordinalPosition" type="px:order"/>
+
+    <xs:attribute name="controlType" type="xs:string"/>
+    <xs:attribute name="headerText" type="xs:string"/>
+    <xs:attribute name="emptyText" type="xs:string"/>
+    <xs:attribute name="required" type="px:boolean"/>
+    <!-- editable: Define si el campo se puede editar -->
+    <xs:attribute name="editable" type="xs:string"/>
+    <!-- visible: Define si el campo es visible si es rendereado -->
+    <xs:attribute name="visible" type="px:boolean"/>
+    <xs:attribute name="description" type="xs:string"/>
+
+    <xs:attribute name="mutuallyExclusiveGroup" type="xs:string"/>
+    <xs:attribute name="groupName" type="xs:string"/>
+
+    <xs:attribute name="hideLabel" type="px:boolean"/>
+    <xs:attribute name="moveAfter" type="xs:string"/>
+    <xs:attribute name="moveBefore" type="xs:string"/>
+    <xs:attribute name="sortOrder" type="px:order"/>
+    <xs:attribute name="sortDirection" type="px:sortDirection"/>
+    <xs:attribute name="autoRowSpan" type="xs:string"/>
+    <xs:attribute name="rowSpanBy" type="xs:string"/>
+
+    <xs:attribute name="format" type="xs:string"/>
+    <xs:attribute name="decimalPositions" type="xs:string"/>
+
+    <xs:attribute name="width" type="xs:decimal"/>
+    <xs:attribute name="height" type="xs:decimal"/>
+    <xs:attribute name="defaultValue" type="xs:string"/>
+    <xs:attribute name="formula" type="xs:string"/>
+    <xs:attribute name="isRequired" type="xs:string"/>
+    <xs:attribute name="autoGenerateField" type="px:boolean"/>
+    <xs:attribute name="loadDataSource" type="px:boolean"/>
+    <xs:attribute name="isSubmitable" type="px:boolean"/>
+
+    <xs:attribute name="primaryTable" type="xs:string"/>
+    <xs:attribute name="foreignSchema" type="xs:string"/>
+    <xs:attribute name="foreignTable" type="xs:string"/>
+    <xs:attribute name="foreignReference" type="xs:string"/>
+    <xs:attribute name="parentFolder" type="xs:string"/>
+    <xs:attribute name="fixedFileName" type="xs:string"/>
+
+    <xs:attribute name="prependText" type="xs:string"/>
+    <xs:attribute name="appendText" type="xs:string"/>
+    <xs:attribute name="mask" type="xs:string"/>
+    <xs:attribute name="location" type="xs:string"/>
+
+    <xs:attribute name="groupByColumn" type="xs:string"/>
+    <xs:attribute name="class" type="xs:string"/>
+    <xs:attribute name="css" type="xs:string"/>
+    <xs:anyAttribute namespace="http://www.panaxit.com/session http://www.panaxit.com/custom http://www.panaxit.com/extjs http://www.panaxit.com/balsamiq http://www.panaxit.com/debug"
+  processContents="skip"/>
+  </xs:attributeGroup>
+  <!--#ENDREGION attributeGroups-->
+
+  <!--#REGION extra recordattributes-->
+  <xs:attributeGroup name="Record.configurableAttributes">
+    <xs:attribute name="headerText" type="px:when"/>
+    <xs:attribute name="disableUpdate" type="px:when"/>
+    <xs:attribute name="disableDelete" type="px:when"/>
+    <xs:attribute name="fieldSet" type="xs:string"/>
+    <xs:attribute name="rowSet" type="xs:string"/>
+
+    <xs:attribute name="editable" type="px:boolean"/>
+    <xs:anyAttribute namespace="http://www.panaxit.com/session http://www.panaxit.com/custom http://www.panaxit.com/extjs http://www.panaxit.com/balsamiq http://www.panaxit.com/debug" processContents="skip"/>
+    <!--<xs:anyAttribute namespace="##targetNamespace http://www.panaxit.com/session http://www.panaxit.com/custom http://www.panaxit.com/extjs http://www.panaxit.com/balsamiq http://www.panaxit.com/debug" processContents="strict"/>-->
+  </xs:attributeGroup>
+  <!--#ENDREGION extra recordattributes-->
+
+  <!--#REGION extra fieldattributes-->
+  <xs:attributeGroup name="fieldattributes.extra">
+    <xs:attributeGroup ref="px:fieldattributes.range"/>
+    <xs:attributeGroup ref="px:fieldattributes.width"/>
+    <xs:attributeGroup ref="px:fieldattributes.height"/>
+    <xs:attributeGroup ref="px:fieldattributes.size"/>
+    <xs:attributeGroup ref="px:fieldattributes.file"/>
+    <xs:attributeGroup ref="px:fieldattributes.formula"/>
+    <xs:attributeGroup ref="px:fieldattributes.password"/>
+  </xs:attributeGroup>
+
+  <xs:attributeGroup name="fieldattributes.file">
+    <xs:attribute name="extension" type="xs:string"/>
+    <xs:attribute name="filePath" type="xs:string"/>
+    <xs:attribute name="showFileName" type="xs:string"/>
+    <xs:attribute name="fileNamePosition" type="xs:string"/>
+  </xs:attributeGroup>
+
+  <xs:attributeGroup name="fieldattributes.formula">
+    <xs:attribute name="definition" type="xs:string"/>
+  </xs:attributeGroup>
+
+  <xs:attributeGroup name="fieldattributes.height">
+    <xs:attribute name="minHeight" type="xs:string"/>
+    <xs:attribute name="maxHeight" type="xs:string"/>
+  </xs:attributeGroup>
+
+  <xs:attributeGroup name="fieldattributes.link">
+    <xs:attribute name="navigateURL" type="xs:string"/>
+  </xs:attributeGroup>
+
+  <xs:attributeGroup name="fieldattributes.length">
+    <xs:attribute name="length" type="xs:decimal"/>
+    <xs:attribute name="minLength" type="xs:decimal"/>
+    <xs:attribute name="maxLength" type="xs:decimal"/>
+  </xs:attributeGroup>
+
+  <xs:attributeGroup name="fieldattributes.password">
+    <xs:attribute name="encryption" type="px:encryption"/>
+    <xs:attribute name="confirmPassword" type="px:boolean"/>
+  </xs:attributeGroup>
+
+  <xs:attributeGroup name="fieldattributes.range">
+    <xs:attribute name="maxValue" type="xs:string"/>
+    <xs:attribute name="minValue" type="xs:string"/>
+    <xs:attribute name="increment" type="xs:string"/>
+  </xs:attributeGroup>
+
+  <xs:attributeGroup name="fieldattributes.size">
+    <xs:attribute name="minSize" type="xs:string"/>
+    <xs:attribute name="maxSize" type="xs:string"/>
+  </xs:attributeGroup>
+
+  <xs:attributeGroup name="fieldattributes.width">
+    <xs:attribute name="minWidth" type="xs:string"/>
+    <xs:attribute name="maxWidth" type="xs:string"/>
+  </xs:attributeGroup>
+
+  <xs:attributeGroup name="fieldattributes.currency">
+    <xs:attribute name="currency" type="px:currency"/>
+    <xs:attribute name="symbol" type="px:currencysymbol"/>
+  </xs:attributeGroup>
+
+  <!--#ENDREGION extra fieldattributes-->
+
+  <!--#REGION extra tableattributes-->
+  <xs:attributeGroup name="tableattributes.extra">
+    <xs:attributeGroup ref="px:tableattributes.rowNumbers"/>
+    <xs:attributeGroup ref="px:tableattributes.gridview"/>
+    <xs:attributeGroup ref="px:tableattributes.scheduleview"/>
+    <xs:attributeGroup ref="px:tableattributes.position"/>
+    <xs:attributeGroup ref="px:tableattributes.file"/>
+    <xs:attributeGroup ref="px:tableattributes.imagefields"/>
+  </xs:attributeGroup>
+
+  <xs:attributeGroup name="tableattributes.rowNumbers">
+    <xs:attribute name="showRowNumbers" type="px:boolean" default="false"/>
+  </xs:attributeGroup>
+
+  <xs:attributeGroup name="tableattributes.gridview">
+    <xs:attribute name="showHeader" type="px:boolean" default="true"/>
+    <xs:attribute name="showFooter" type="xs:string" default="false"/>
+  </xs:attributeGroup>
+
+  <xs:attributeGroup name="tableattributes.scheduleview">
+    <xs:attribute name="dateField" type="xs:string"/>
+    <xs:attribute name="textField" type="xs:string"/>
+    <xs:attribute name="text" type="xs:string"/>
+  </xs:attributeGroup>
+
+  <xs:attributeGroup name="tableattributes.position">
+    <xs:attribute name="xField" type="xs:boolean"/>
+    <xs:attribute name="yField" type="xs:boolean"/>
+    <xs:attribute name="zField" type="xs:boolean" />
+    <xs:attribute name="zIndexField" type="xs:boolean" />
+  </xs:attributeGroup>
+
+  <xs:attributeGroup name="tableattributes.imagefields">
+    <xs:attribute name="imageField" type="xs:boolean" default="false"/>
+  </xs:attributeGroup>
+
+  <xs:attributeGroup name="tableattributes.file">
+    <xs:attribute name="fileLocation" type="xs:string"/>
+    <xs:attribute name="fileName" type="xs:string"/>
+  </xs:attributeGroup>
+  <!--#ENDREGION extra tableattributes-->
+
+  <!--#REGION extra relationshipattributes-->
+  <xs:attributeGroup name="Relationship.baseAttributes">
+    <xs:attribute name="RelationshipName" use="required"/>
+    <xs:attribute name="Type" use="required" type="px:Relationship.Type"/>
+    <xs:attribute name="TableSchema" use="required" type="xs:string"/>
+    <xs:attribute name="TableName" use="required" type="xs:string"/>
+    <xs:attribute name="EnforceConstraint" type="px:bit"/>
+  </xs:attributeGroup>
+
+  <xs:attributeGroup name="Relationship.configurableAttributes">
+    <xs:attribute name="text" type="xs:string"/>
+
+    <xs:attribute name="maxRecords" type="xs:integer"/>
+    <xs:attribute name="minRecords" type="xs:integer"/>
+    <xs:attribute name="maxSelections" type="xs:integer"/>
+    <xs:attribute name="minSelections" type="xs:integer"/>
+    <xs:attribute name="disableInsert" type="xs:string"/>
+    <xs:attribute name="disableUpdate" type="xs:string"/>
+    <xs:attribute name="disableDelete" type="xs:string"/>
+
+  </xs:attributeGroup>
+  <!--#ENDREGION extra relationshipattributes-->
+
+</xs:schema>

@@ -1,0 +1,194 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:extjs="urn:extjs"
+  xmlns="http://www.panaxit.com/layout"
+  targetNamespace="http://www.panaxit.com/layout"
+  xmlns:xml="http://www.w3.org/XML/1998/namespace"
+  elementFormDefault="qualified"
+  attributeFormDefault="unqualified">
+  <xs:import namespace="http://www.w3.org/XML/1998/namespace"/>
+  <!--schemaLocation="http://www.w3.org/2001/03/xml.xsd"-->
+
+  <xs:element name="layout" type="layout"/>
+
+  <xs:attributeGroup name="container.attributes">
+    <xs:attribute name="collapsible"  type="xs:boolean" default="false"/>
+    <xs:attribute name="collapsed"   type="xs:boolean"/>
+    <xs:attribute name="align"        type="container.align"/>
+    <xs:attribute name="valign"       type="container.valign"/>
+    <xs:attributeGroup ref="container.baseattributes"/>
+  </xs:attributeGroup>
+
+  <xs:attributeGroup name="container.baseattributes">
+    <xs:attribute name="name" type="xs:string"/>
+    <xs:attribute name="orientation" type="container.orientation"/>
+  </xs:attributeGroup>
+
+  <xs:complexType name="layout">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:group ref="baseControls"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:group name="baseControls">
+    <xs:choice>
+      <xs:element name="form"           type="form"/>
+      <xs:element name="grid"           type="grid"/>
+      <xs:element name="regionManager"  type="regionManager"/>
+    </xs:choice>
+  </xs:group>
+
+  <xs:group name="controls.all">
+    <xs:choice>
+      <xs:element name="field"            type="field"/>
+      <xs:element name="panel"            type="panel"/>
+      <xs:element name="tabPanel"         type="tabPanel"/>
+      <xs:element name="verticalTabPanel" type="verticalTabPanel"/>
+      <xs:element name="fieldSet"         type="fieldSet" />
+      <xs:element name="fieldContainer"   type="fieldContainer" />
+      <xs:element name="groupTabPanel"    type="groupTabPanel" />
+    </xs:choice>
+  </xs:group>
+
+  <xs:complexType name="form">
+    <xs:choice minOccurs="1" maxOccurs="unbounded">
+      <xs:group ref="controls.all"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="grid">
+    <xs:choice minOccurs="1" maxOccurs="unbounded">
+      <xs:element name="field" type="field"/>
+      <xs:element name="fieldSet" type="fieldContainer.grid"/>
+      <xs:element name="fieldContainer" type="fieldContainer.grid"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:element name="left" type="region"/>
+  <xs:element name="right" type="region"/>
+  <xs:element name="center" type="region"/>
+  <xs:element name="top" type="region"/>
+  <xs:element name="bottom" type="region"/>
+
+  <xs:complexType name="regionManager">
+    <xs:all>
+      <xs:element ref="left"  minOccurs="0"/>
+      <xs:element ref="right" minOccurs="0"/>
+      <xs:element ref="center"  minOccurs="1"/>
+      <xs:element ref="top"  minOccurs="0"/>
+      <xs:element ref="bottom" minOccurs="0"/>
+    </xs:all>
+  </xs:complexType>
+
+  <xs:complexType name="panel">
+    <xs:choice minOccurs="1" maxOccurs="unbounded">
+      <xs:group ref="controls.all"/>
+    </xs:choice>
+    <xs:attributeGroup ref="container.attributes"/>
+  </xs:complexType>
+
+  <xs:complexType name="region">
+    <xs:group ref="baseControls"/>
+    <xs:attributeGroup ref="container.attributes"/>
+  </xs:complexType>
+
+  <xs:complexType name="tabPanel">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="tab" type="tab"></xs:element>
+    </xs:choice>
+    <xs:attribute name="position" type="container.position"/>
+    <xs:attributeGroup ref="container.baseattributes"/>
+  </xs:complexType>
+
+  <xs:complexType name="groupTabPanel">
+    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="groupTabPanelItem" type="groupTabPanelItem"/>
+    </xs:sequence>
+    <xs:attributeGroup ref="container.baseattributes"/>
+  </xs:complexType>
+
+  <xs:complexType name="groupTabPanelItem">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:group ref="controls.all"/>
+      <xs:element name="subGroupTabPanel" type="tab"/>
+    </xs:choice>
+    <xs:attribute name="headerText"   type="xs:string" use="required"/>
+    <xs:attributeGroup ref="container.attributes"/>
+  </xs:complexType>
+
+  <xs:complexType name="verticalTabPanel">
+    <xs:complexContent>
+      <xs:extension base="tabPanel">
+        <!--<xs:attribute name="orientation" type="container.orientation" fixed="vertical"/>-->
+        <!--<xs:attribute name="position" type="container.position" default="left"/>-->
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="tab">
+    <xs:complexContent>
+      <xs:extension base="panel">
+        <xs:attribute name="headerText"   type="xs:string" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="fieldContainer">
+    <xs:choice minOccurs="1" maxOccurs="unbounded">
+      <xs:group ref="controls.all"/>
+    </xs:choice>
+    <xs:attributeGroup ref="container.attributes"/>
+    <xs:attribute name="headerText"   type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="fieldSet">
+    <xs:choice minOccurs="1" maxOccurs="unbounded">
+      <xs:group ref="controls.all"/>
+    </xs:choice>
+    <xs:attributeGroup ref="container.attributes"/>
+    <xs:attribute name="headerText"   type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="fieldContainer.grid">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="field" type="field"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="field">
+    <xs:attribute name="refId" type="xs:string" use="required"/>
+    <xs:attribute name="name" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:simpleType name="container.orientation">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="horizontal"/>
+      <xs:enumeration value="vertical"/>
+      <!--<xs:enumeration value="delete"/>-->
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="container.position">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="top"/>
+      <xs:enumeration value="bottom"/>
+      <xs:enumeration value="left"/>
+      <xs:enumeration value="right"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="container.valign">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="top"/>
+      <xs:enumeration value="middle"/>
+      <xs:enumeration value="bottom"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="container.align">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="left"/>
+      <xs:enumeration value="center"/>
+      <xs:enumeration value="right"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>

@@ -1,0 +1,97 @@
+<xs:schema
+  xmlns:px="http://www.panaxit.com"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:custom="http://www.panaxit.com/custom"
+  xmlns:layout="http://www.panaxit.com/layout"
+  xmlns:session="http://www.panaxit.com/session"
+  elementFormDefault="qualified"
+  attributeFormDefault="qualified"
+	xmlns:msxsl="urn:schemas-microsoft-com:xslt">
+  <!--xmlns="http://www.panaxit.com"-->
+  <xs:import namespace="http://www.w3.org/XML/1998/namespace"/>
+  <xs:import namespace="http://www.panaxit.com" schemaLocation="panaxUI.xsd"/>
+  <xs:import namespace="http://www.panaxit.com/layout" schemaLocation="layout.xsd"/>
+  <xs:import namespace="http://www.panaxit.com/custom" schemaLocation="..\..\..\Config\custom.xsd"/>
+
+  <xs:element name="Table" type="Table"/>
+
+  <xs:complexType name="Table">
+    <xs:complexContent>
+      <xs:extension base="custom:Table.customAttributes">
+        <xs:sequence>
+          <xs:element name="query" minOccurs="0" />
+          <xs:element ref="px:PrimaryKeys" minOccurs="0" />
+          <xs:element ref="px:Parameters" minOccurs="0" />
+          <xs:element ref="px:Routes" minOccurs="0" />
+          <xs:element name="Record" type="Record" minOccurs="0" />
+          <xs:element name="layout" type="layout:layout" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attributeGroup ref="px:Table.baseAttributes"></xs:attributeGroup>
+        <xs:attributeGroup ref="px:Table.configurableAttributes"></xs:attributeGroup>
+        <xs:attributeGroup ref="px:tableattributes.extra"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Field">
+    <xs:attribute name="groupTabPanel" type="xs:string"/>
+    <xs:attribute name="subGroupTabPanel" type="xs:string"/>
+    <xs:attribute name="portlet" type="xs:string"/>
+    <xs:attribute name="tabPanel" type="xs:string"/>
+    <xs:attribute name="tab" type="xs:string"/>
+    <xs:attribute name="fieldSet" type="xs:string"/>
+    <xs:attribute name="fieldContainer" type="xs:string"/>
+    <xs:attribute name="fieldContainer.Orientation" type="xs:string"/>
+    <xs:attribute name="fieldContainer.headerText" type="xs:string"/>
+    <xs:attribute name="fieldContainerEnd" type="xs:string"/>
+    <xs:attribute name="fieldSetOrientation" type="layout:container.orientation"/>
+
+    <xs:attributeGroup ref="px:Column.baseAttributes"></xs:attributeGroup>
+    <xs:attributeGroup ref="px:Column.configurableAttributes"/>
+    <xs:attributeGroup ref="px:fieldattributes.extra"/>
+  </xs:complexType>
+
+  <xs:complexType name="Relationship">
+    <xs:complexContent>
+      <xs:extension base="Field">
+        <xs:sequence maxOccurs="unbounded">
+          <xs:element ref="px:Mappings" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="Relationship" type="Relationship" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="data" type="px:Data" minOccurs="0"/>
+          <xs:element name="Table" type="Table" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attributeGroup ref="px:Relationship.baseAttributes"/>
+        <xs:attributeGroup ref="px:Relationship.configurableAttributes"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Record">
+    <xs:complexContent>
+      <xs:extension base="custom:Fields.customAttributes">
+        <!--Para compatibilidad puede aceptar atributos definidos en el archivo custom sin tener que definirlos con el esquema "custom"-->
+        <xs:choice minOccurs="1" maxOccurs="unbounded">
+          <xs:element name="Field" type="Field"/>
+          <xs:element name="Relationship" type="Relationship"/>
+          <!--<xs:element name="Relationship" type="Relationship.ForeignTable"/>-->
+        </xs:choice>
+        <xs:attributeGroup ref="px:Record.configurableAttributes"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:element name="root">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Tables">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element ref="Table" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

@@ -1,0 +1,61 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:custom="urn:custom" xmlns:extjs="urn:extjs"
+elementFormDefault="qualified" attributeFormDefault="qualified"
+>
+  <xs:element name="dataField" type="dataField"/>
+
+  <xs:element name="deleteRow">
+    <xs:complexType>
+      <xs:attribute name="identityValue" type="xs:string"/>
+      <xs:attribute name="primaryValue" type="xs:string"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="dataField">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="name" type="xs:string">
+        </xs:attribute>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:element name="dataRow">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="dataField" minOccurs="1" maxOccurs="unbounded" />
+        <xs:element ref="dataTable" minOccurs="0" maxOccurs="unbounded" />
+      </xs:sequence>
+      <xs:attribute name="identityValue" type="xs:string"/>
+      <xs:attribute name="primaryValue" type="xs:string"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="exec">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="param" minOccurs="0" maxOccurs="unbounded" />
+      </xs:sequence>
+      <xs:attribute name="name" type="xs:string" use="required"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="param">
+    <xs:complexType>
+      <xs:attribute name="name" type="xs:string" use="required"/>
+      <xs:attribute name="isOutput" type="xs:string"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="dataTable">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="dataRow" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element ref="deleteRow" minOccurs="0" maxOccurs="unbounded" />
+      </xs:sequence>
+      <xs:attribute name="name" type="xs:string" use="required"/>
+      <xs:attribute name="primaryKey" type="xs:string"/>
+      <xs:attribute name="identityKey" type="xs:string"/>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>
